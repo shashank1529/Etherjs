@@ -1,95 +1,53 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+// Import React and the necessary hooks
+"use client"
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { ethers, providers } from 'ethers';
+
+import { EtherscanProvider } from '@ethersproject/providers';
+
+
+const Page = () => {
+  const address = "0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326";
+  const apiKey = "KFQGDK49TS94C9FXAQPZVI2X2XPDUXAK6V";
+  const [transaction,setTransaction] =useState([]);
+  const [contractcode,setcontractcode] = useState("");
+  const network="homestead";
+  const etherjs=async()=>{
+
+    const provider= new EtherscanProvider(network, apiKey);
+    const balance=await provider.getBalance(address);
+   const showBalance = ethers.utils.formatEther(balance);
+   const check=await provider.getBlock(18641735);
+   const number= check.transactions;
+   setTransaction(number)
+   const contract=await provider.getCode(address);
+   setcontractcode(contract);
+  //  console.log(contract);
+  //  console.log(transaction);
+    
+  };
+  useEffect(()=>{
+    etherjs();
+  },[]);
+ 
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+
+   <div>
+    Etherjs tutorial
+    <h3>Contract Code:</h3>
+      <pre>{contractcode}</pre>
+    {transaction.map((el,i)=>(
+      <div key={i+1}>
+        <h6>{el}</h6>
       </div>
+    )
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    )}
+   </div>
+      
+  );
+};
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Page;
